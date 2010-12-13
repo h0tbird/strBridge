@@ -71,11 +71,11 @@ int main(void)
 	log4cxx::PropertyConfigurator::configure(log4cxx::File("conf/logger.properties"));
 
 	// Detach process:
-	if(init_daemon() < 0) {goto halt0;}
+	if(init_daemon() < 0) {MyDBG; goto halt0;}
 	LOG4CXX_WARN(logger, "Detached from parent.");
 
 	// Instantiate the manager interface:
-	if((sm = new Manager()) == NULL) {goto halt0;}
+	if((sm = new Manager()) == NULL) {MyDBG; goto halt0;}
 	LOG4CXX_WARN(logger, "New manager interface.");
 
 	// Socket: bind and listen:
@@ -111,6 +111,7 @@ int main(void)
 			// Get a valid frame ID or drop:
 			if (readn(clientfd, frameid, 1) != 1) {goto halt2;}
 
+			// Do the child stuff:
 			switch(frameid[0])
 
 			{
