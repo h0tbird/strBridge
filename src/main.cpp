@@ -183,15 +183,14 @@ int dispatch_start (int clientfd)
 
 	{
 		// Add source and destinations:
-		if(j==0){k += addSource(1, p, buff2, i); j++;}
-		else{k += addDestination(p, j, buff2, i); j++;}
+		if(j==0) {k += addSource(1, p, buff2, i); j++;}
+		else {k += addDestination(p, j, buff2, i); j++;}
+		if(k != 0) {MyDBG; goto halt0;}
 
 		// Evaluate break condition:
 		c += (strlen(buff2)+digits(i)+2)*sizeof(char);
 		if(*(c-sizeof(char)) == '\0') {break;}
 	}
-
-	if (k != 0) {MyDBG; goto halt0;}
 
 	// Send the PID:
 	if(sprintf(buff1, "%d", p) < 0) {MyDBG; goto halt0;}
