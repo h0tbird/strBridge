@@ -193,9 +193,11 @@ int dispatch_start (int clientfd)
 
 	if (k != 0) {MyDBG; goto halt0;}
 
-	// Send PID close socket and loop:
-	if(sprintf(buff1, "%d", p) < 0) {MyDBG; goto halt0;};
-	writen(clientfd, buff1, strlen(buff1));
+	// Send the PID:
+	if(sprintf(buff1, "%d", p) < 0) {MyDBG; goto halt0;}
+	if((size_t)(writen(clientfd, buff1, strlen(buff1))) != strlen(buff1)) {MyDBG; goto halt0;}
+
+	// Close the socket and loop forever:
 	close(clientfd);
 	while(1);
 
