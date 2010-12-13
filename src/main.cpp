@@ -63,8 +63,7 @@ int main(void)
 {
 	// Init variables:
 	int data, listenfd, clientfd;
-	struct sockaddr_in servaddr, cliaddr;
-	socklen_t len = sizeof(cliaddr);
+	struct sockaddr_in servaddr;
 	pid_t pid;
 	char frameid[1];
 
@@ -100,7 +99,7 @@ int main(void)
 
 	{
 		// Accept a client connection:
-		if((clientfd = accept(listenfd, (struct sockaddr *) &cliaddr, &len)) < 0) continue;
+		if((clientfd = accept(listenfd, NULL, NULL)) < 0) continue;
 
 		// Concurrent server:
 		if((pid = fork()) == 0)
@@ -110,18 +109,18 @@ int main(void)
 			close(listenfd);
 
 			// Get a valid frame ID or drop:
-			readn(clientfd, frameid, 1);
+			if (readn(clientfd, frameid, 1) != 1) {goto halt2;}
 
 			switch(frameid[0])
 
 			{
 				case '0': dispatch_start(clientfd); break;
 				case '1': dispatch_stop(clientfd); break;
-				default: printf("Frame drop: [%c]", frameid[0]);
+				default: MyDBG;
 			}
 
 			// Child end:
-			close(clientfd);
+			halt2: close(clientfd);
 			exit(0);
 		}
 
