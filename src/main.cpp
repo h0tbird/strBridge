@@ -221,7 +221,7 @@ int dispatch_start (int clientfd)
 
 	// Close the socket and loop forever:
 	close(clientfd);
-	while(1);
+	while(1) {sleep(10);}
 
 	// Return on error:
 	halt0: return -1;
