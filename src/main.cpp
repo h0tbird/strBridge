@@ -91,7 +91,7 @@ int main(void)
 	char frameid[1];
 
 	// Configure the logger:
-	log4cxx::PropertyConfigurator::configure(log4cxx::File("conf/logger.properties"));
+	log4cxx::PropertyConfigurator::configure(log4cxx::File("/etc/strBridge/logger.properties"));
 
 	// Detach process:
 	if(init_daemon() < 0) {MyDBG; goto halt0;}

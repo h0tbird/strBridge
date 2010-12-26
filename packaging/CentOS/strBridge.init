@@ -1,0 +1,57 @@
+#!/bin/bash
+
+#------------------------------------------------------------------------------
+# Startup script for strBridge
+#
+# chkconfig: 345 85 15
+# description: A high-performance UDP packet reflector.
+# processname: strBridge
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# Entry point:
+#------------------------------------------------------------------------------
+
+case "$1" in
+
+	#------------------
+	# Start strBridge:
+	#------------------
+
+	start)
+
+		echo $"Starting strBridge"
+		/usr/bin/strBridge
+		exit $?
+		;;
+
+	#-----------------
+	# Stop strBridge:
+	#-----------------
+
+	stop)
+
+		echo $"Stopping strBridge"
+		killall strBridge
+		exit $?
+		;;
+
+	#--------------------
+	# Restart strBridge:
+	#--------------------
+
+	restart)
+
+		$0 stop
+		$0 start
+		;;
+
+	#------------
+	# Catch-all:
+	#------------
+
+	*)
+		echo $"Usage: $0 {start|stop|restart}"
+		exit 1
+		;;
+esac

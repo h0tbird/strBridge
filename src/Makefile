@@ -1,31 +1,21 @@
 #------------------------------------------------------------------------------
-# exports:
-#------------------------------------------------------------------------------
-
-export CFLAGS= -Wall -Werror
-export LFLAGS= -lstrmanager -llog4cxx -lboost_thread
-export bin-dir= $(basedir)/usr/bin
-export cfg-dir= $(basedir)/etc/strBridge
-
-#------------------------------------------------------------------------------
 # all:
 #------------------------------------------------------------------------------
 
 all:
-		make -C src
+		g++ $(CFLAGS) main.cpp $(LFLAGS) -o ../bin/strBridge
 
 #------------------------------------------------------------------------------
 # clean:
 #------------------------------------------------------------------------------
 
 clean:
-		make -C src clean
+		rm -f ../bin/strBridge
 
 #------------------------------------------------------------------------------
 # install:
 #------------------------------------------------------------------------------
 
 install:
-		make -C src install
-		mkdir -p $(cfg-dir)
-		install -m644 etc/logger.properties $(cfg-dir)
+		mkdir -p $(bin-dir)
+		install -m755 ../bin/strBridge $(bin-dir)
