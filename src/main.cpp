@@ -61,6 +61,7 @@ static LoggerPtr logger(Logger::getLogger("strBridge"));
 //-----------------------------------------------------------------------------
 
 int init_daemon(void);
+int createPIDFile(const char *path);
 int dispatch_start (int clientfd);
 int dispatch_stop (int clientfd);
 Sigfunc *signal (int signo, Sigfunc *func);
@@ -76,6 +77,7 @@ int addDestination(int src_id, int dest_id, char* ip, int port);
 //-----------------------------------------------------------------------------
 
 Manager * sm = NULL;
+static char *pidfile = "/var/run/strBridge.pid";
 
 //-----------------------------------------------------------------------------
 // Entry point:
@@ -96,6 +98,9 @@ int main(void)
 	// Detach process:
 	if(init_daemon() < 0) {MyDBG; goto halt0;}
 	LOG4CXX_WARN(logger, "Detached from parent.");
+
+	// Create the PID file:
+	if(createPIDFile(pidfile) < 0) {MyDBG; goto halt0;}
 
 	// Instantiate the manager interface:
 	if((sm = new Manager()) == NULL) {MyDBG; goto halt0;}
@@ -182,6 +187,33 @@ int init_daemon(void)
 
 	// Return on success.
 	return 0;
+}
+
+//-----------------------------------------------------------------------------
+// createPIDFile:
+//-----------------------------------------------------------------------------
+
+int createPIDFile(const char *path)
+
+{
+	int fd;
+	FILE *f;
+
+	// Open the file:
+	if((fd = open(path, O_WRONLY | O_CREAT | O_EXCL, 0644)) == -1) {MyDBG; goto halt0;}
+	if((f = fdopen(fd, "w")) == NULL) {MyDBG; goto halt1;}
+
+	// Write PID to file and close:
+	if(fprintf(f, "%ld\n", (long) getpid()) < 0) {MyDBG; goto halt1;}
+	if(fclose(f)) {MyDBG; goto halt1;}
+
+	// Return on success:
+	close(fd);
+	return 0;
+
+	// Return on error:
+	halt1: close(fd);
+	halt0: return -1;
 }
 
 //-----------------------------------------------------------------------------
